@@ -1,5 +1,5 @@
 import unittest
-from htmlnode import HTMLNode, LeafNode
+from htmlnode import HTMLNode, LeafNode, ParentNode
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -131,6 +131,117 @@ class TestLeafNode(unittest.TestCase):
         node = LeafNode("span", "Test", {"class": "highlight"})
         expected_repr = "LeafNode(span, Test, {'class': 'highlight'})"
         self.assertEqual(repr(node), expected_repr)
+
+
+class TestParentNode(unittest.TestCase):
+    def test_basic_parent_node(self):
+        """Test a ParentNode with a single LeafNode child"""
+        node = ParentNode("div", [LeafNode("span", "Hello")])
+        self.assertEqual(node.to_html(), "<div><span>Hello</span></div>")
+
+    def test_nested_parent_nodes(self):
+        """Test ParentNode containing another ParentNode with children"""
+        node = ParentNode(
+            "div",
+            [
+                ParentNode(
+                    "section",
+                    [LeafNode("p", "Paragraph inside section")]
+                ),
+                LeafNode("h1", "Heading")
+            ]
+        )
+        self.assertEqual(
+            node.to_html(),
+            "<div><section><p>Paragraph inside section</p></section><h1>Heading</h1></div>"
+        )
+
+    def test_multiple_children(self):
+        """Test ParentNode with multiple LeafNode children"""
+        node = ParentNode(
+            "ul",
+            [
+                LeafNode("li", "Item 1"),
+                LeafNode("li", "Item 2"),
+                LeafNode("li", "Item 3"),
+            ]
+        )
+        self.assertEqual(
+            node.to_html(), "<ul><li>Item 1</li><li>Item 2</li><li>Item 3</li></ul>")
+
+    def test_no_tag_raises_error(self):
+        """Test that ParentNode without a tag raises ValueError"""
+        with self.assertRaises(ValueError) as context:
+            ParentNode(None, [LeafNode("p", "Content")])
+        self.assertEqual(str(context.exception), "ParentNode must have a tag")
+
+    def test_no_children_raises_error(self):
+        """Test that ParentNode without children raises ValueError"""
+        with self.assertRaises(ValueError) as context:
+            ParentNode("div", None)
+        self.assertEqual(str(context.exception),
+                         "ParentNode must have children")
+
+    def test_empty_children_list(self):
+        """Test ParentNode with an empty list of children"""
+        node = ParentNode("div", [])
+        self.assertEqual(node.to_html(), "<div></div>")
+
+    def test_with_attributes(self):
+        """Test ParentNode with HTML attributes (props)"""
+        node = ParentNode("a", [LeafNode(None, "Click me")], {
+                          "href": "https://example.com"})
+        self.assertEqual(
+            node.to_html(), '<a href="https://example.com">Click me</a>')
+
+    def test_mixed_children_types(self):
+        """Test ParentNode containing both LeafNode and nested ParentNode children"""
+        node = ParentNode(
+            "div",
+            [
+                LeafNode("b", "Bold"),
+                LeafNode(None, "Normal"),
+                ParentNode(
+                    "p",
+                    [LeafNode(None, "Inside paragraph")]
+                ),
+            ]
+        )
+        self.assertEqual(
+            node.to_html(),
+            "<div><b>Bold</b>Normal<p>Inside paragraph</p></div>"
+        )
+
+    def test_special_characters(self):
+        """Test handling of special characters like <, >, and & in text"""
+        node = ParentNode(
+            "p", [LeafNode(None, "Text with <, >, and & symbols")])
+        self.assertEqual(
+            node.to_html(), "<p>Text with <, >, and & symbols</p>")
+
+    def test_deeply_nested_structure(self):
+        """Test deeply nested ParentNodes to ensure recursion works properly"""
+        node = ParentNode(
+            "div",
+            [
+                ParentNode(
+                    "section",
+                    [
+                        ParentNode(
+                            "article",
+                            [
+                                LeafNode("h1", "Nested Heading"),
+                                LeafNode("p", "Nested Paragraph")
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+        self.assertEqual(
+            node.to_html(),
+            "<div><section><article><h1>Nested Heading</h1><p>Nested Paragraph</p></article></section></div>"
+        )
 
 
 if __name__ == "__main__":
