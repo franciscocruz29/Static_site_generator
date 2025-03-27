@@ -173,14 +173,14 @@ class TestParentNode(unittest.TestCase):
         """Test that ParentNode without a tag raises ValueError"""
         with self.assertRaises(ValueError) as context:
             ParentNode(None, [LeafNode("p", "Content")])
-        self.assertEqual(str(context.exception), "ParentNode must have a tag")
+        self.assertEqual(str(context.exception), "invalid HTML: no tag")
 
     def test_no_children_raises_error(self):
         """Test that ParentNode without children raises ValueError"""
         with self.assertRaises(ValueError) as context:
             ParentNode("div", None)
         self.assertEqual(str(context.exception),
-                         "ParentNode must have children")
+                         "invalid HTML: no children")
 
     def test_empty_children_list(self):
         """Test ParentNode with an empty list of children"""
