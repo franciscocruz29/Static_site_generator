@@ -1,10 +1,16 @@
 import unittest
-from inline_markdown import split_nodes_delimiter
+from inline_markdown import (
+    split_nodes_delimiter,
+    extract_markdown_images,
+    extract_markdown_links
+)
 from textnode import TextNode, TextType
 
 
 class TestInlineMarkdown(unittest.TestCase):
-    """Tests for split_nodes_delimiter function."""
+    """Tests for inline markdown processing functions."""
+
+    # --- Tests for split_nodes_delimiter ---
 
     def test_delim_bold(self):
         """Tests for bold formatting using ** delimiter."""
@@ -122,6 +128,50 @@ class TestInlineMarkdown(unittest.TestCase):
             ],
             new_nodes,
         )
+
+    # --- Tests for extract_markdown_images ---
+
+    def test_extract_images_single(self):
+        """Tests extracting a single markdown image."""
+        text = "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png)"
+        matches = extract_markdown_images(text)
+        self.assertListEqual(
+            [("image", "https://i.imgur.com/zjjcJKZ.png")], matches)
+
+    def test_extract_images_multiple(self):
+        """Tests extracting multiple markdown images."""
+        text = "![img1](url1.png) and ![img2](url2.jpg) and text ![img3](url3.gif)"
+        matches = extract_markdown_images(text)
+        self.assertListEqual(
+            [("img1", "url1.png"), ("img2", "url2.jpg"),
+             ("img3", "url3.gif")], matches
+        )
+
+    def test_extract_images_none(self):
+        """Tests text with no markdown images."""
+        text = "This text has no images, maybe a [link](here.com)?"
+        matches = extract_markdown_images(text)
+        self.assertListEqual([], matches)
+
+    # --- Tests for extract_markdown_links ---
+
+    def test_extract_links_single(self):
+        """Tests extracting a single markdown link."""
+        text = "This is text with a [link](https://www.google.com)."
+        matches = extract_markdown_links(text)
+        self.assertListEqual([("link", "https://www.google.com")], matches)
+
+    def test_extract_links_multiple(self):
+        """Tests extracting multiple markdown links."""
+        text = "Text with [link1](url1) and [link2](url2)."
+        matches = extract_markdown_links(text)
+        self.assertListEqual([("link1", "url1"), ("link2", "url2")], matches)
+
+    def test_extract_links_none(self):
+        """Tests text with no markdown links."""
+        text = "This text has no links."
+        matches = extract_markdown_links(text)
+        self.assertListEqual([], matches)
 
 
 if __name__ == "__main__":
