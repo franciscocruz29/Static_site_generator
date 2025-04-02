@@ -1,5 +1,6 @@
+import re
 from textnode import TextNode, TextType
-from typing import List
+from typing import List, Tuple
 
 
 def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType) -> List[TextNode]:
@@ -42,3 +43,43 @@ def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: 
                     new_nodes.append(TextNode(section, text_type))
 
     return new_nodes
+
+
+def extract_markdown_images(text: str) -> List[Tuple[str, str]]:
+    """
+    Extract all markdown image references from text.
+
+    Args:
+        text (str): The markdown text to search
+
+    Returns:
+        list of tuples: Each tuple contains (alt_text, image_url)
+
+    Example:
+        >>> text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif)"
+        >>> extract_markdown_images(text)
+        [('rick roll', 'https://i.imgur.com/aKaOqIh.gif')]
+    """
+    pattern = r"!\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    matches = re.findall(pattern, text)
+    return matches
+
+
+def extract_markdown_links(text: str) -> List[Tuple[str, str]]:
+    """
+    Extract all markdown hyperlinks from text, excluding image references.
+
+    Args:
+        text (str): The markdown text to search
+
+    Returns:
+        list of tuples: Each tuple contains (anchor_text, link_url)
+
+    Example:
+        >>> text = "This is text with a link [to boot dev](https://www.boot.dev)"
+        >>> extract_markdown_links(text)
+        [('to boot dev', 'https://www.boot.dev')]
+    """
+    pattern = r"(?<!!)\[([^\[\]]*)\]\(([^\(\)]*)\)"
+    matches = re.findall(pattern, text)
+    return matches
