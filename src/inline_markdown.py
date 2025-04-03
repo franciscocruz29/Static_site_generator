@@ -4,15 +4,34 @@ from typing import List, Tuple
 
 
 def split_nodes_delimiter(old_nodes: List[TextNode], delimiter: str, text_type: TextType) -> List[TextNode]:
-    """Splits text nodes based on a given delimiter and assigns a new text type.
+    """Splits text nodes by a given delimiter and assigns a specified text type to delimited sections.
+
+    This function processes a list of text nodes, identifying occurrences of a given delimiter within 
+    text-type nodes. It splits the text into alternating normal and formatted segments, creating 
+    new nodes accordingly. Any non-text nodes are preserved as-is.
+
+    The function assumes well-formed input where each opening delimiter has a matching closing 
+    delimiter. If an unmatched delimiter is detected, a ValueError is raised.
 
     Args:
-        old_nodes (List[TextNode]): List of input nodes.
-        delimiter (str): The delimiter to split text.
-        text_type (TextType): The type assigned to the formatted text.
+        old_nodes (List[TextNode]): The input list of text nodes.
+        delimiter (str): The character or sequence used to identify formatted sections.
+        text_type (TextType): The text type assigned to the delimited sections.
 
     Returns:
-        List[TextNode]: A list of transformed nodes.
+        List[TextNode]: A new list of nodes with correctly split and formatted text segments.
+
+    Raises:
+        ValueError: If the input text contains unmatched delimiters.
+
+    Example:
+        >>> node = TextNode("This is text with a `code block` word", TextType.TEXT)
+        >>> split_nodes_delimiter([node], "`", TextType.CODE)
+        [
+            TextNode("This is text with a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" word", TextType.TEXT)
+        ]
     """
 
     new_nodes = []
