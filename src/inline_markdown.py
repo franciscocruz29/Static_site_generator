@@ -207,3 +207,27 @@ def split_nodes_link(old_nodes: List[TextNode]):
         extract_markdown_links,
         TextType.LINK
     )
+
+
+def text_to_textnodes(text: str) -> List[TextNode]:
+    """
+    Converts a raw string of markdown-formatted text into a list of TextNode objects.
+
+    This function processes the input text sequentially through multiple markdown parsers
+    to identify and convert various markdown elements (bold, italic, code, images, links)
+    into appropriate TextNode objects.
+
+    Args:
+        text (str): The markdown-formatted text to parse
+
+    Returns:
+        List[TextNode]: A list of TextNode objects representing the parsed markdown elements
+    """
+
+    nodes = [TextNode(text, TextType.TEXT)]
+    nodes = split_nodes_delimiter(nodes, "**", TextType.BOLD)
+    nodes = split_nodes_delimiter(nodes, "_", TextType.ITALIC)
+    nodes = split_nodes_delimiter(nodes, "`", TextType.CODE)
+    nodes = split_nodes_image(nodes)
+    nodes = split_nodes_link(nodes)
+    return nodes
