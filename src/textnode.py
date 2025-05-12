@@ -14,7 +14,7 @@ class TextType(Enum):
 
 class TextNode():
     """
-    Represents a piece of inline text parsed from Markdown.
+    Represents the various types of inline text that can exist in HTML and Markdown.
 
     Attributes:
         text (str): The actual text content
