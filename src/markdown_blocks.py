@@ -82,12 +82,21 @@ def block_to_block_type(block: str) -> BlockType:
     return BlockType.PARAGRAPH
 
 
-def markdown_to_html_node(markdown):
+def markdown_to_html_node(markdown: str) -> ParentNode:
+    """
+    Converts a full markdown document into a single parent HTMLNode.
+
+    The parent HTMLNode (a 'div') contains child HTMLNode objects
+    representing the nested markdown elements.
+
+    Args:
+        markdown: The markdown string to convert.
+
+    Returns:
+        A ParentNode ('div') containing the HTML representation of the markdown.
+    """
     blocks = markdown_to_blocks(markdown)
-    children = []
-    for block in blocks:
-        html_node = block_to_html_node(block)
-        children.append(html_node)
+    children = [block_to_html_node(block) for block in blocks]
     return ParentNode("div", children, None)
 
 
