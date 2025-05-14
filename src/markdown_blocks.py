@@ -45,7 +45,11 @@ def block_to_block_type(block: str) -> BlockType:
     """
     Determines the BlockType of a given markdown block.
 
-    Assumes leading/trailing whitespace is already stripped.
+    Args:
+        block (str): A markdown block with leading/trailing whitespace stripped.
+
+    Returns:
+        BlockType: The identified type of the markdown block.
     """
 
     lines = block.split("\n")
