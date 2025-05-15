@@ -82,56 +82,6 @@ def block_to_block_type(block: str) -> BlockType:
     return BlockType.PARAGRAPH
 
 
-def markdown_to_html_node(markdown: str) -> ParentNode:
-    """
-    Converts a full markdown document into a single parent HTMLNode.
-
-    The parent HTMLNode (a 'div') contains child HTMLNode objects
-    representing the nested markdown elements.
-
-    Args:
-        markdown: The markdown string to convert.
-
-    Returns:
-        A ParentNode ('div') containing the HTML representation of the markdown.
-    """
-    blocks = markdown_to_blocks(markdown)
-    children = [block_to_html_node(block) for block in blocks]
-    return ParentNode("div", children, None)
-
-
-def block_to_html_node(block: str) -> ParentNode:
-    """
-    Converts a markdown block to its appropriate HTML node.
-
-    Args:
-        block (str): A markdown block string.
-
-    Returns:
-        ParentNode: The HTML node corresponding to the markdown block.
-
-    Raises:
-        ValueError: If the block type is invalid or unsupported.
-    """
-    block_type = block_to_block_type(block)
-
-    # Use a dictionary to map block types to their respective handler functions
-    block_handlers = {
-        BlockType.PARAGRAPH: paragraph_to_html_node,
-        BlockType.HEADING: heading_to_html_node,
-        BlockType.CODE: code_to_html_node,
-        BlockType.OLIST: olist_to_html_node,
-        BlockType.ULIST: ulist_to_html_node,
-        BlockType.QUOTE: quote_to_html_node
-    }
-
-    handler = block_handlers.get(block_type)
-    if handler:
-        return handler(block)
-
-    raise ValueError(f"Unsupported block type: {block_type}")
-
-
 def text_to_children(text):
     text_nodes = text_to_textnodes(text)
     children = []
@@ -202,3 +152,53 @@ def quote_to_html_node(block):
     content = " ".join(new_lines)
     children = text_to_children(content)
     return ParentNode("blockquote", children)
+
+
+def block_to_html_node(block: str) -> ParentNode:
+    """
+    Converts a markdown block to its appropriate HTML node.
+
+    Args:
+        block (str): A markdown block string.
+
+    Returns:
+        ParentNode: The HTML node corresponding to the markdown block.
+
+    Raises:
+        ValueError: If the block type is invalid or unsupported.
+    """
+    block_type = block_to_block_type(block)
+
+    # Use a dictionary to map block types to their respective handler functions
+    block_handlers = {
+        BlockType.PARAGRAPH: paragraph_to_html_node,
+        BlockType.HEADING: heading_to_html_node,
+        BlockType.CODE: code_to_html_node,
+        BlockType.OLIST: olist_to_html_node,
+        BlockType.ULIST: ulist_to_html_node,
+        BlockType.QUOTE: quote_to_html_node
+    }
+
+    handler = block_handlers.get(block_type)
+    if handler:
+        return handler(block)
+
+    raise ValueError(f"Unsupported block type: {block_type}")
+
+
+def markdown_to_html_node(markdown: str) -> ParentNode:
+    """
+    Converts a full markdown document into a single parent HTMLNode.
+
+    The parent HTMLNode (a 'div') contains child HTMLNode objects
+    representing the nested markdown elements.
+
+    Args:
+        markdown: The markdown string to convert.
+
+    Returns:
+        A ParentNode ('div') containing the HTML representation of the markdown.
+    """
+    blocks = markdown_to_blocks(markdown)
+    children = [block_to_html_node(block) for block in blocks]
+    return ParentNode("div", children, None)
