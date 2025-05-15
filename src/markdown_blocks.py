@@ -82,12 +82,18 @@ def block_to_block_type(block: str) -> BlockType:
     return BlockType.PARAGRAPH
 
 
-def text_to_children(text):
+def text_to_children(text: str) -> List[ParentNode]:
+    """
+    Converts inline markdown text into a list of HTMLNode children.
+
+    Args:
+        text (str): Markdown text with inline elements.
+
+    Returns:
+        List[ParentNode]: A list of HTMLNode children.
+    """
     text_nodes = text_to_textnodes(text)
-    children = []
-    for text_node in text_nodes:
-        html_node = text_node_to_html_node(text_node)
-        children.append(html_node)
+    children = [text_node_to_html_node(node) for node in text_nodes]
     return children
 
 
