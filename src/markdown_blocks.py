@@ -100,21 +100,36 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
     return ParentNode("div", children, None)
 
 
-def block_to_html_node(block):
+def block_to_html_node(block: str) -> ParentNode:
+    """
+    Converts a markdown block to its appropriate HTML node.
+
+    Args:
+        block (str): A markdown block string.
+
+    Returns:
+        ParentNode: The HTML node corresponding to the markdown block.
+
+    Raises:
+        ValueError: If the block type is invalid or unsupported.
+    """
     block_type = block_to_block_type(block)
-    if block_type == BlockType.PARAGRAPH:
-        return paragraph_to_html_node(block)
-    if block_type == BlockType.HEADING:
-        return heading_to_html_node(block)
-    if block_type == BlockType.CODE:
-        return code_to_html_node(block)
-    if block_type == BlockType.OLIST:
-        return olist_to_html_node(block)
-    if block_type == BlockType.ULIST:
-        return ulist_to_html_node(block)
-    if block_type == BlockType.QUOTE:
-        return quote_to_html_node(block)
-    raise ValueError("invalid block type")
+
+    # Use a dictionary to map block types to their respective handler functions
+    block_handlers = {
+        BlockType.PARAGRAPH: paragraph_to_html_node,
+        BlockType.HEADING: heading_to_html_node,
+        BlockType.CODE: code_to_html_node,
+        BlockType.OLIST: olist_to_html_node,
+        BlockType.ULIST: ulist_to_html_node,
+        BlockType.QUOTE: quote_to_html_node
+    }
+
+    handler = block_handlers.get(block_type)
+    if handler:
+        return handler(block)
+
+    raise ValueError(f"Unsupported block type: {block_type}")
 
 
 def text_to_children(text):
