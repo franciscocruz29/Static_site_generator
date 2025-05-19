@@ -97,14 +97,32 @@ def text_to_children(text: str) -> List[ParentNode]:
     return children
 
 
-def paragraph_to_html_node(block):
+def paragraph_to_html_node(block: str) -> ParentNode:
+    """
+    Converts a paragraph block to an HTML node.
+
+    Args:
+        block (str): The paragraph block text.
+
+    Returns:
+        ParentNode: HTML paragraph node with child elements.
+    """
     lines = block.split("\n")
     paragraph = " ".join(lines)
     children = text_to_children(paragraph)
     return ParentNode("p", children)
 
 
-def heading_to_html_node(block):
+def heading_to_html_node(block: str) -> ParentNode:
+    """
+    Converts a heading block into the appropriate <h1> - <h6> HTMLNode.
+
+    Args:
+        block (str): Markdown heading block.
+
+    Returns:
+        ParentNode: A heading HTMLNode.
+    """
     level = 0
     for char in block:
         if char == "#":
@@ -118,7 +136,16 @@ def heading_to_html_node(block):
     return ParentNode(f"h{level}", children)
 
 
-def code_to_html_node(block):
+def code_to_html_node(block: str) -> ParentNode:
+    """
+    Converts a code block into a <pre><code>...</code></pre> HTMLNode.
+
+    Args:
+        block (str): Markdown code block enclosed in triple backticks.
+
+    Returns:
+        ParentNode: A preformatted code HTMLNode.
+    """
     if not block.startswith("```") or not block.endswith("```"):
         raise ValueError("invalid code block")
     text = block[4:-3]
@@ -128,7 +155,16 @@ def code_to_html_node(block):
     return ParentNode("pre", [code])
 
 
-def olist_to_html_node(block):
+def olist_to_html_node(block: str) -> ParentNode:
+    """
+    Converts an ordered list block into an <ol> HTMLNode with <li> children.
+
+    Args:
+        block (str): Markdown ordered list block.
+
+    Returns:
+        ParentNode: An ordered list HTMLNode.
+    """
     items = block.split("\n")
     html_items = []
     for item in items:
@@ -138,7 +174,16 @@ def olist_to_html_node(block):
     return ParentNode("ol", html_items)
 
 
-def ulist_to_html_node(block):
+def ulist_to_html_node(block: str) -> ParentNode:
+    """
+    Converts an unordered list block into a <ul> HTMLNode with <li> children.
+
+    Args:
+        block (str): Markdown unordered list block.
+
+    Returns:
+        ParentNode: An unordered list HTMLNode.
+    """
     items = block.split("\n")
     html_items = []
     for item in items:
@@ -148,7 +193,16 @@ def ulist_to_html_node(block):
     return ParentNode("ul", html_items)
 
 
-def quote_to_html_node(block):
+def quote_to_html_node(block: str) -> ParentNode:
+    """
+    Converts a blockquote into a <blockquote> HTMLNode.
+
+    Args:
+        block (str): Markdown quote block.
+
+    Returns:
+        ParentNode: A blockquote HTMLNode.
+    """
     lines = block.split("\n")
     new_lines = []
     for line in lines:
