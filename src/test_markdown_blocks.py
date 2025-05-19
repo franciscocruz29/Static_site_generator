@@ -114,7 +114,8 @@ class TestMarkdownBlockTypes(unittest.TestCase):
 
 class TestMarkdownToHtmlNode(unittest.TestCase):
     """
-    Test suite for convert a full markdown document into a single parent HTMLNode
+    Test suite for the markdown_to_html_node function, which converts a full 
+    markdown document into a single parent HTMLNode.
     """
 
     def test_paragraph(self):
