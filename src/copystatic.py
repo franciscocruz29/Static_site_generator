@@ -1,8 +1,19 @@
 import os
 import shutil
+from typing import NoReturn
 
 
-def copy_files_recursive(source_dir_path, dest_dir_path):
+def copy_files_recursive(source_dir_path: str, dest_dir_path: str) -> NoReturn:
+    """
+    Recursively copies the contents of a source directory to a destination directory.
+
+    If the destination directory does not exist, it is created. All files and subdirectories
+    from the source are copied into the destination. Each copied path is logged to stdout.
+
+    Args:
+        source_dir_path (str): The path to the source directory to copy from.
+        dest_dir_path (str): The path to the destination directory to copy to.
+    """
     if not os.path.exists(dest_dir_path):
         os.mkdir(dest_dir_path)
 
